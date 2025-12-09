@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script type="text/javascript" src="proyectoVisualizacion.js"></script>
   <title>Proyecto Visualización</title>
     
 </head>
@@ -41,9 +42,12 @@
       height:100%;
     }
 
-    #checkboxes{
+    #checkboxesDiv{
       height: 80%;
       width: auto;
+      display: flex;
+      align-items: center;
+
     }
 
     legend{
@@ -53,10 +57,18 @@
 
     input[type="checkbox"]{
       margin-bottom: 4px;
+      width: 12px;
+      height: 12px;
+      cursor: pointer;
+    }
+
+    label{
+      font-size: 11pt;
+      cursor: pointer;
     }
 </style>
 
-<body>
+<body onload="inicializar()">
 
 <h1>Distribución de comercios por <br> sectores en las provincias de CyL </h1>
 
@@ -75,63 +87,40 @@
 
   <!-- Mapa -->
   <div id="cloropletico">
-    <svg id="mapSvg">
 
-      <!-- Hay que cambiarlo en d3 -->
-      <!-- Solo sirve ahora como esqueleto para pruebas -->
-      <rect class="provincia" data-provincia="León"
-            x="50" y="50" width="120" height="100" fill="#a6cee3" stroke="#333"></rect>
-      <rect class="provincia" data-provincia="Zamora"
-            x="200" y="50" width="120" height="100" fill="#1f78b4" stroke="#333"></rect>
-      <rect class="provincia" data-provincia="Burgos"
-            x="350" y="50" width="120" height="100" fill="#b2df8a" stroke="#333"></rect>
-      <rect class="provincia" data-provincia="Salamanca"
-            x="50" y="200" width="120" height="100" fill="#33a02c" stroke="#333"></rect>
-      <rect class="provincia" data-provincia="Valladolid"
-            x="200" y="200" width="120" height="100" fill="#fb9a99" stroke="#333"></rect>
-      <rect class="provincia" data-provincia="Soria"
-            x="350" y="200" width="120" height="100" fill="#e31a1c" stroke="#333"></rect>
-      <rect class="provincia" data-provincia="Ávila"
-            x="50" y="350" width="120" height="100" fill="#cab2d6" stroke="#333"></rect>
-      <rect class="provincia" data-provincia="Segovia"
-            x="200" y="350" width="120" height="100" fill="#6a3d9a" stroke="#333"></rect>
-      <rect class="provincia" data-provincia="Palencia"
-            x="350" y="350" width="120" height="100" fill="#fdbf6f" stroke="#333"></rect>
-
-    </svg>
   </div>
 
 
     <!-- Checkbox -->
-    <div id="checkboxes">
+    <div id="checkboxesDiv">
       <fieldset>
       <legend>Sectores</legend>
       <label><input type="checkbox" id="selTodo" onchange="selecTodo()" checked>Seleccionar todo</label><br>
       <label><input type="checkbox" id="deselTodo" onchange="deselecTodo()">Deseleccionar todo</label>
       <hr>
-      <label><input type="checkbox" name="sector" onchange="cambioFiltros(0)">Supermercados y alimentación</label><br>
-      <label><input type="checkbox" name="sector" onchange="cambioFiltros(1)">Prendas de vestir y textiles</label><br>
-      <label><input type="checkbox" name="sector" onchange="cambioFiltros(2)">Farmacias y ópticas</label><br>
-      <label><input type="checkbox" name="sector" onchange="cambioFiltros(3)">Carnicerías</label><br>
-      <label><input type="checkbox" name="sector" onchange="cambioFiltros(4)">Bazares y otros establecimientos</label><br>
-      <label><input type="checkbox" name="sector" onchange="cambioFiltros(5)">Bricolaje</label><br>
-      <label><input type="checkbox" name="sector" onchange="cambioFiltros(6)">Fruterías</label><br>
-      <label><input type="checkbox" name="sector" onchange="cambioFiltros(7)">Venta y repuestos vehículos</label><br>
-      <label><input type="checkbox" name="sector" onchange="cambioFiltros(8)">Muebles</label><br>
-      <label><input type="checkbox" name="sector" onchange="cambioFiltros(9)">Panaderías y confiterías</label><br>
-      <label><input type="checkbox" name="sector" onchange="cambioFiltros(10)">Combustibles</label><br>
-      <label><input type="checkbox" name="sector" onchange="cambioFiltros(11)">Tabaco / estanco</label><br>
-      <label><input type="checkbox" name="sector" onchange="cambioFiltros(12)">Librerías y juguete</label><br>
-      <label><input type="checkbox" name="sector" onchange="cambioFiltros(13)">Plantas y animales de compañía</label><br>
-      <label><input type="checkbox" name="sector" onchange="cambioFiltros(14)">Electrodomésticos</label><br>
-      <label><input type="checkbox" name="sector" onchange="cambioFiltros(15)">Productos cosméticos e higiénicos</label><br>
-      <label><input type="checkbox" name="sector" onchange="cambioFiltros(16)">Informática y telecomunicaciones</label><br>
-      <label><input type="checkbox" name="sector" onchange="cambioFiltros(17)">Otros-artículos nuevos</label><br>
-      <label><input type="checkbox" name="sector" onchange="cambioFiltros(18)">Calzado y cuero</label><br>
-      <label><input type="checkbox" name="sector" onchange="cambioFiltros(19)">Pescaderías</label><br>
-      <label><input type="checkbox" name="sector" onchange="cambioFiltros(20)">Relojería y joyería</label><br>
-      <label><input type="checkbox" name="sector" onchange="cambioFiltros(21)">Artículos deportivos</label><br>
-      <label><input type="checkbox" name="sector" onchange="cambioFiltros(22)">Kioskos y papelería</label><br>
+      <label><input type="checkbox" name="sector" oninput="cambioFiltros(0, checked)">Supermercados y alimentación</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(1, checked)">Prendas de vestir y textiles</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(2, checked)">Farmacias y ópticas</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(3, checked)">Carnicerías</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(4, checked)">Bazares y otros establecimientos</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(5, checked)">Bricolaje</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(6, checked)">Fruterías</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(7, checked)">Venta y repuestos vehículos</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(8, checked)">Muebles</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(9, checked)">Panaderías y confiterías</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(10, checked)">Combustibles</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(11, checked)">Tabaco / estanco</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(12, checked)">Librerías y juguete</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(13, checked)">Plantas y animales de compañía</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(14, checked)">Electrodomésticos</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(15, checked)">Productos cosméticos e higiénicos</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(16, checked)">Informática y telecomunicaciones</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(17, checked)">Otros-artículos nuevos</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(18, checked)">Calzado y cuero</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(19, checked)">Pescaderías</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(20, checked)">Relojería y joyería</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(21, checked)">Artículos deportivos</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(22, checked)">Kioskos y papelería</label><br>
 
       </fieldset>
     </div>
