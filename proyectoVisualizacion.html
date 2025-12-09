@@ -1,0 +1,152 @@
+      <!DOCTYPE HTML>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <title>Proyecto Visualización</title>
+    
+</head>
+<style>
+  html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  h1{
+    font-size:250%;
+    text-align:center;
+    font-weight: bold;
+    margin: 5px 0;
+  }
+
+  #contenedorMapa {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    padding: 10px;
+    justify-content: center;
+  }
+
+    #cloropletico {
+      height:80%;
+      aspect-ratio: 1/1;
+      border:1px solid #aaa;
+      margin: 0 10px 0 5px;
+    }
+
+    #mapSvg {
+      width:100%;
+      height:100%;
+    }
+
+    #checkboxes{
+      height: 80%;
+      width: auto;
+    }
+
+    legend{
+      font-size: 20pt;
+      font-weight: bold;
+    }
+
+    input[type="checkbox"]{
+      margin-bottom: 4px;
+    }
+</style>
+
+<body>
+
+<h1>Distribución de comercios por <br> sectores en las provincias de CyL </h1>
+
+<!-- Contenedor mapa y checkbox-->
+<div id="contenedorMapa">
+
+  <!-- Leyenda -->
+  <div id="leyenda">
+    <h3>Leyenda</h3>
+    <svg id="legendaSvg" width="180" height="120">
+      <rect x="10"  y="10" width="20" height="20" fill="#ffbfaa"></rect> <text x="40" y="25">Bajo</text>
+      <rect x="10"  y="40" width="20" height="20" fill="#ff7b5a"></rect> <text x="40" y="55">Medio</text>
+      <rect x="10"  y="70" width="20" height="20" fill="#ff0000"></rect> <text x="40" y="85">Alto</text>
+    </svg>
+  </div>
+
+  <!-- Mapa -->
+  <div id="cloropletico">
+    <svg id="mapSvg">
+
+      <!-- Hay que cambiarlo en d3 -->
+      <!-- Solo sirve ahora como esqueleto para pruebas -->
+      <rect class="provincia" data-provincia="León"
+            x="50" y="50" width="120" height="100" fill="#a6cee3" stroke="#333"></rect>
+      <rect class="provincia" data-provincia="Zamora"
+            x="200" y="50" width="120" height="100" fill="#1f78b4" stroke="#333"></rect>
+      <rect class="provincia" data-provincia="Burgos"
+            x="350" y="50" width="120" height="100" fill="#b2df8a" stroke="#333"></rect>
+      <rect class="provincia" data-provincia="Salamanca"
+            x="50" y="200" width="120" height="100" fill="#33a02c" stroke="#333"></rect>
+      <rect class="provincia" data-provincia="Valladolid"
+            x="200" y="200" width="120" height="100" fill="#fb9a99" stroke="#333"></rect>
+      <rect class="provincia" data-provincia="Soria"
+            x="350" y="200" width="120" height="100" fill="#e31a1c" stroke="#333"></rect>
+      <rect class="provincia" data-provincia="Ávila"
+            x="50" y="350" width="120" height="100" fill="#cab2d6" stroke="#333"></rect>
+      <rect class="provincia" data-provincia="Segovia"
+            x="200" y="350" width="120" height="100" fill="#6a3d9a" stroke="#333"></rect>
+      <rect class="provincia" data-provincia="Palencia"
+            x="350" y="350" width="120" height="100" fill="#fdbf6f" stroke="#333"></rect>
+
+    </svg>
+  </div>
+
+
+    <!-- Checkbox -->
+    <div id="checkboxes">
+      <fieldset>
+      <legend>Sectores</legend>
+      <label><input type="checkbox" id="selTodo" onchange="selecTodo()" checked>Seleccionar todo</label><br>
+      <label><input type="checkbox" id="deselTodo" onchange="deselecTodo()">Deseleccionar todo</label>
+      <hr>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(0)">Supermercados y alimentación</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(1)">Prendas de vestir y textiles</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(2)">Farmacias y ópticas</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(3)">Carnicerías</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(4)">Bazares y otros establecimientos</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(5)">Bricolaje</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(6)">Fruterías</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(7)">Venta y repuestos vehículos</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(8)">Muebles</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(9)">Panaderías y confiterías</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(10)">Combustibles</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(11)">Tabaco / estanco</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(12)">Librerías y juguete</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(13)">Plantas y animales de compañía</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(14)">Electrodomésticos</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(15)">Productos cosméticos e higiénicos</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(16)">Informática y telecomunicaciones</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(17)">Otros-artículos nuevos</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(18)">Calzado y cuero</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(19)">Pescaderías</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(20)">Relojería y joyería</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(21)">Artículos deportivos</label><br>
+      <label><input type="checkbox" name="sector" onchange="cambioFiltros(22)">Kioskos y papelería</label><br>
+
+      </fieldset>
+    </div>
+</div>
+
+<!--GraficoBarras-->
+<div id="graficoBarras" style="display:none;">
+  <h2 id="tituloBarra">Datos provincia</h2>
+
+  <svg id="barSvg" width="650" height="450" style="border:1px solid #aaa">
+    <!-- Se vacía y llena con D3 al clicar provincia -->
+  </svg>
+
+  <button id="btnVolverMapa">Volver al mapa</button>
+</div>
+
+</body>
+</html>
