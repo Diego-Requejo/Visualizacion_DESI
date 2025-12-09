@@ -1,0 +1,10 @@
+h1 {
+  font-size:160%;
+  text-align:center;
+  font-weight: bold;
+}
+
+#radio table {
+  margin-left:auto;
+  margin-right:auto;
+}
