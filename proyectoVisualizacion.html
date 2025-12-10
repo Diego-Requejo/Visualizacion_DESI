@@ -33,7 +33,6 @@
     #cloropletico {
       height:80%;
       aspect-ratio: 1/1;
-      border:1px solid #aaa;
       margin: 0 10px 0 5px;
     }
 
@@ -48,6 +47,13 @@
       display: flex;
       align-items: center;
 
+    }
+
+    #leyenda{
+      border:1px solid #aaa;
+      height: 180px;
+      width: 150px;
+      text-align: center;
     }
 
     legend{
@@ -78,7 +84,7 @@
   <!-- Leyenda -->
   <div id="leyenda">
     <h3>Leyenda</h3>
-    <svg id="legendaSvg" width="180" height="120">
+    <svg id="legendaSvg" width="100%" height="120">
       <rect x="10"  y="10" width="20" height="20" fill="#ffbfaa"></rect> <text x="40" y="25">Bajo</text>
       <rect x="10"  y="40" width="20" height="20" fill="#ff7b5a"></rect> <text x="40" y="55">Medio</text>
       <rect x="10"  y="70" width="20" height="20" fill="#ff0000"></rect> <text x="40" y="85">Alto</text>
