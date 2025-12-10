@@ -1,11 +1,48 @@
 
 var selec=[]
-
+var sectores = [
+  "SUPERMERCADOS Y ALIMENTACIÓN",
+  "PRENDAS DE VESTIR Y TEXTILES",
+  "FARMACIAS Y ÓPTICAS",
+  "CARNICERÍAS",
+  "BAZARES Y OTROS ESTABLECIMIENTOS",
+  "BRICOLAJE",
+  "FRUTERÍAS",
+  "VENTA Y REPUESTOS VEHÍCULOS",
+  "MUEBLES",
+  "PANADERÍAS Y CONFITERIAS",
+  "COMBUSTIBLES",
+  "TABACO / ESTANCO",
+  "LIBRERÍAS Y JUGUETES",
+  "PLANTAS Y ANIMALES DE COMPAÑÍA",
+  "ELECTRODOMÉSTICOS",
+  "PRODUCTOS COSMÉTICOS E HIGIÉNICOS",
+  "INFORMÁTICA Y TELECOMUNICACIONES",
+  "OTROS-ARTÍCULOS NUEVOS",
+  "CALZADO Y CUERO",
+  "PESCADERÍAS",
+  "RELOJERÍA Y JOYERÍA",
+  "ARTÍCULOS DEPORTIVOS",
+  "KIOSKOS Y PAPELERÍA",
+  "SEGUNDA MANO"
+];
 
 function inicializar(){
-    for(var i=0;i<23;i++)
+    for(var i=0;i<24;i++)
         selec.push(true);
     selecTodo();
+
+    // Asignar botón de volver aquí
+    var btn = document.getElementById("btnVolverMapa");
+    if(btn){
+        btn.onclick = function(){
+            document.getElementById("graficoBarras").style.display = "none";
+            document.getElementById("cloropletico").style.display = "block";
+            document.getElementById("leyenda").style.display = "block";
+            document.getElementById("checkboxesDiv").style.display = "flex";
+            dibujarMapa(); // Re-dibuja el mapa en estado inicial
+        }
+    }
 }
 
 function selecTodo(){
@@ -40,6 +77,104 @@ function cambioFiltros(i, checked){
     dibujarMapa();
 }
 
+function calcularComerciosProvincia(nombreProvincia, comercios){
+    var total = 0;
+    comercios.forEach(function(d){
+        if (d.Provincia.toUpperCase() === nombreProvincia.toUpperCase()){
+            var idx = sectores.indexOf(d["Sector comercial"].toUpperCase());
+            if(idx >= 0 && selec[idx]){
+                total += parseInt(d["Nº establecimientos"]);
+            }
+        }
+    });
+    return total;
+}
+
+function calcularRatio(nombreProvincia, comercios, habitantes){
+    var totalCom = calcularComerciosProvincia(nombreProvincia, comercios);
+    var hab = 1;
+    habitantes.forEach(function(h){
+        if(h.PROVINCIA.toUpperCase() === nombreProvincia.toUpperCase())
+            hab = parseInt(h.HABITANTES);
+    });
+    return (totalCom / hab*1000);
+}
+function calcularRatioMaximo(comercios, habitantes) {
+    let maxRatio = 0;
+    mapData.features.forEach(function(d) {
+        let provincia = d.properties.provincia;
+        let ratio = calcularRatio(provincia, comercios, habitantes);
+        if (ratio > maxRatio) maxRatio = ratio;
+    });
+    return maxRatio;
+}
+function mostrarGraficoBarras(provincia, comercios) {
+
+    document.getElementById("cloropletico").style.display = "none";
+    document.getElementById("leyenda").style.display = "none";
+    document.getElementById("checkboxesDiv").style.display = "none";
+
+
+    document.getElementById("graficoBarras").style.display = "block";
+    document.getElementById("tituloBarra").innerText = "Provincia: " + provincia;
+
+    var dataProv = sectores.map((sector, i) => {
+        let total = 0;
+        comercios.forEach(d => {
+            if (
+                d.Provincia.toUpperCase() === provincia.toUpperCase() &&
+                d["Sector comercial"].toUpperCase() === sector.toUpperCase() &&
+                selec[i]
+            ) {
+                total += parseInt(d["Nº establecimientos"]);
+            }
+        });
+        return {
+            sector: sector,
+            cantidad: total
+        };
+    });
+    console.log(dataProv);
+    var svg = d3.select("#barSvg");
+    svg.selectAll("*").remove(); 
+
+    var WIDTH = +svg.attr("width") - 100;
+    var HEIGHT = +svg.attr("height") - 50;
+
+    var x = d3.scaleBand()
+        .domain(dataProv.map(d => d.sector))
+        .range([50, WIDTH])
+        .padding(0.2);
+
+    var y = d3.scaleLinear()
+        .domain([0, d3.max(dataProv, d => d.cantidad)])
+        .range([HEIGHT, 20]);
+
+
+    svg.append("g")
+        .attr("transform", `translate(0,${HEIGHT})`)
+        .call(d3.axisBottom(x))
+        .selectAll("text")
+        .attr("transform", "rotate(-45)")
+        .style("text-anchor", "end");
+
+    svg.append("g")
+        .attr("transform", `translate(50,0)`)
+        .call(d3.axisLeft(y));
+
+
+    svg.selectAll("rect")
+        .data(dataProv)
+        .enter()
+        .append("rect")
+        .attr("x", d => x(d.sector))
+        .attr("y", d => y(d.cantidad))
+        .attr("width", x.bandwidth())
+        .attr("height", d => HEIGHT - y(d.cantidad))
+        .attr("fill", "#69b3a2");
+}
+
+
 function dibujarMapa(){
     console.log("Dibujando Mapa");
     d3.select("#cloropletico").selectAll("svg").remove();
@@ -55,8 +190,12 @@ function dibujarMapa(){
     var svgHeight = HEIGHT-50;
 
 
-    d3.json("provincias-CastillaYLeon.json")
-        .then((mapData)=>{
+     d3.json("provincias-CastillaYLeon.json").then(function(mapData){
+
+        d3.dsv(";","habitantesProvincias.csv").then(function(habitantes){
+
+            d3.dsv(";","NumeroEstablecimientos.csv").then(function(comercios){
+
 
             var svg = d3.select("#cloropletico")
                 .append("svg")
@@ -175,6 +314,13 @@ function dibujarMapa(){
                 //muestra como aÃ±adir un identificador a cada path
                 provincias.push(data.properties.provincia);
             });
+            var maxRatio = 0;
+            comercios.forEach(function(c){
+                habitantes.forEach(function(h){
+                    let ratio = calcularRatio(c.Provincia, comercios, habitantes);
+                    if(ratio > maxRatio) maxRatio = ratio;
+                });
+            });
             svg.selectAll("path")
                 .data(mapData.features)
                 .enter()
@@ -182,7 +328,15 @@ function dibujarMapa(){
                 .attr("id",function(data,i){return provincias[i];}) // AÃ±adimos identificador individual a cada path
                 .attr("d", geoPath)
                 .on("click",resaltaProvincia)
-                .attr("fill", colorProvincia)
+                .attr("fill", function(d){
+                    var provincia = d.properties.provincia;
+                    var ratio = calcularRatio(provincia, comercios, habitantes);
+                    console.log(maxRatio);
+                    if (ratio > 0.75 * maxRatio) return "#a51b0b";      // Alto
+                    if (ratio > 0.5 * maxRatio) return "#ff0000";       // Medio-alto
+                    if (ratio > 0.25 * maxRatio) return "#ff7b5a";      // Medio
+                    return "#ffbfaa";                                   // Bajo
+                })
                 .on("mouseover", handleMouseOver)
                 .on("mouseout", handleMouseOut);
 
@@ -190,96 +344,54 @@ function dibujarMapa(){
             function resaltaProvincia(evento) {
                 var planoProvincia;
                 mapData.features.forEach(function(data,j){
-                    if (provincias[j]==evento.target.id) { // tambien se podia haber hecho con this.id.
-                        // "this" contiene el objeto del dom clicado
-                        planoProvincia = data;  // nos quedamos con los datos de la provincia a resaltar
+                    if (provincias[j]==evento.target.id) {
+                        planoProvincia = data;
                     }
                 });
-                var escalaProvincia;
-                var color;
-                if (d3.select(this).attr("class") == null) {  // primer clic
-                    escalaProvincia = escala*1.3;
-                    color = "red";
-                } else {  // segundo clic
-                    d3.select(this).attr("class",null);
-                    escalaProvincia = escala;
-                    color = "black";
-                }
-                var centroProvincia = geoPath.centroid(planoProvincia); // guardamos posicion original
 
-                var projectionProv = d3.geoMercator().scale(escalaProvincia);//.translate([transX,transY]); //.center(centroProvincia);
+                // Animación
+                var escalaProvincia = escala * 1.3;
+                var color = "red";
+
+                var centroProvincia = geoPath.centroid(planoProvincia);
+                var projectionProv = d3.geoMercator().scale(escalaProvincia);
                 var geoPathProv = d3.geoPath(projectionProv);
                 var centroProvinciaEsc = geoPathProv.centroid(planoProvincia);
-
-                //  Al reescalar cambian los valores de proyeccion. Tenemos que volver a calcular
-                //y aplicar la transformacion para que la provincia ampliada quede en la misma posicion
                 var transXProv = (centroProvincia[0]-centroProvinciaEsc[0])+offsetX;
                 var transYProv = (centroProvincia[1]-centroProvinciaEsc[1])+offsetY;
-
-                projectionProv = projectionProv.translate([transXProv,transYProv]);
+                projectionProv = projectionProv.translate([transXProv, transYProv]);
                 geoPathProv = d3.geoPath(projectionProv);
 
-                d3.select(this).transition().delay(0).duration(2000)
-                    .attr("class","clic")
-                    .style("fill", color)
-                    .attr("d",geoPathProv(planoProvincia));
-            }
-
-            /*
-            Cambiar función para que coloree como tiene que colorear
-             */
-            function colorProvincia(data, i){
-                if(provincias[i] === "León")
-                    return "brown";
-                else if(provincias[i]==="Palencia")
-                    return "orange";
-                else if(provincias[i]==="Burgos")
-                    return "yellow";
-                else if(provincias[i]==="Salamanca")
-                    return "green";
-                else if(provincias[i]==="Segovia")
-                    return "blue";
-                else if(provincias[i]==="Ávila")
-                    return "grey";
-                else if(provincias[i]==="Zamora")
-                    return "red";
-                else if(provincias[i]==="Valladolid")
-                    return "purple";
-                else
-                    return "pink";
-
-                if (i%2===0) {
-                    return "blue";
-                }else
-                    return "red";
+                d3.select(this).transition().duration(500)
+                    .attr("d", geoPathProv(planoProvincia))
+                    .on("end", function() {
+                        // Al terminar la animación, mostramos gráfico de barras
+                        mostrarGraficoBarras(evento.target.id, comercios);
+                    });
             }
 
             // Create Event Handlers for mouse
             /*Modificar para que muestre los datos*/
-            function handleMouseOver(event, i) {
-                console.log(i);
-                console.log(event.target.id);
+            function handleMouseOver(event, d) {
+                var provincia = d.properties.provincia;
+                var ratio = calcularRatio(provincia, comercios, habitantes).toFixed(1);
 
                 svg.append("rect")
-                    .attr("id", "r" + event.target.id)  // Rect con "r"
-                    .attr("x", event.x - 640)
-                    .attr("y", event.y - 145)
-                    .attr("width", 150)
-                    .attr("height", 40)
+                    .attr("id", "r" + provincia)
+                    .attr("x", event.offsetX + 10)
+                    .attr("y", event.offsetY - 20)
+                    .attr("width", 190)
+                    .attr("height", 45)
                     .style("fill", "white")
-                    .style("stroke", "black")
-                    .style("pointer-events", "none");;
+                    .style("stroke", "black");
 
                 svg.append("text")
-                    .attr("id", "t" + event.target.id)  // Text con "t" (CAMBIO AQUÍ)
-                    .attr("x", event.x - 620)
-                    .attr("y", event.y - 125)
-                    .text("Texto con los datos")
-                    .style("fill", "black")
-                    .style("pointer-events", "none");;
-
-                console.log("x:", event.x, "y", event.y);
+                    .attr("id", "t" + provincia)
+                    .attr("x", event.offsetX + 20)
+                    .attr("y", event.offsetY + 5)
+                    .text(provincia + ": " + ratio + " comercios / 1000 hab");
             }
+
 
             function handleMouseOut(event, i) {
                 d3.select("#t" + event.target.id).remove();  // Ahora sí existe
@@ -290,4 +402,6 @@ function dibujarMapa(){
             d3.select("#grafico").append("svg").append("text").attr("x",30).attr("y",30).text("ERROR al cargar los datos");
             //console.log(e);
         });
+        });
+    });
 }
