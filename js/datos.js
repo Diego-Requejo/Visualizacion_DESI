@@ -1,11 +1,12 @@
 var prov =[];
 var habitantes = []
 var sectores =[];
-var establecimientos = [];
+var establecimientos = {};
 
 async function recogerData() {
     await recogerProvHab();
     await recogerSectEst();
+    console.log(establecimientos);
 }
 
 async function recogerProvHab() {
@@ -26,7 +27,14 @@ async function recogerSectEst() {
     data.forEach(function (d) {
         if (!sectores.includes(d.Sector))
             sectores.push(d.Sector);
-        establecimientos.push(+d.Establecimientos);
+        // Crear estructura de diccionario
+        // Si la provincia no existe, crearla
+        if (!establecimientos[d.Provincia]) {
+            establecimientos[d.Provincia] = {};
+        }
+
+        // Asignar el valor: establecimientos[Provincia][Sector] = numero
+        establecimientos[d.Provincia][d.Sector] = +d.Establecimientos;;
     });
 
 }

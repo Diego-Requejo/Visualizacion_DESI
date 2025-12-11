@@ -65,7 +65,7 @@
     var globalData;
     var sum;
     var hidden = false;
-    var hola = [];
+
     d3.csv("data_04.csv").then(function (data){
         globalData = data;
         sum = 0;
@@ -73,7 +73,6 @@
             d.income = +d.income;
             sum += d.income;
         });
-        console.log(hola);
         x.domain(data.map(function(d) { return d.country; }));
         y.domain([0, d3.max(data, function(d) { return d.income/sum; })]);
         svg.append("g")
