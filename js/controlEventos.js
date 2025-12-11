@@ -15,10 +15,10 @@ async function inicializar() {
     var btn = document.getElementById("btnVolverMapa");
     if (btn) {
         btn.onclick = function () {
-            document.getElementById("graficoBarras").style.display = "none";
-            document.getElementById("cloropletico").style.display = "block";
-            document.getElementById("leyenda").style.display = "block";
-            document.getElementById("checkboxesDiv").style.display = "flex";
+            document.getElementById("contenedorBarras").style.display = "none";
+            document.getElementById("contenedorMapa").style.display = "flex";
+            
+            document.querySelector("h1").innerHTML = "Distribución de comercios por <br> sectores en las provincias de CyL";
             dibujarMapa(); // Re-dibuja el mapa en estado inicial
         }
     }

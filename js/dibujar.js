@@ -2,9 +2,9 @@
 
 
 function modificarLeyenda(maxRatio){
-    var bajo = (maxRatio*0.25);
-    var medio =(maxRatio*0.5);
-    var medioAlto = (maxRatio*0.75);
+    var bajo = (maxRatio*0.45);
+    var medio =(maxRatio*0.65);
+    var medioAlto = (maxRatio*0.85);
 
     if(maxRatio===0)
         d3.selectAll("text").text("-")
@@ -32,7 +32,7 @@ function calcularRatio(nombreProvincia){
     var totalCom = 0;
     for(var i=0;i<selec.length;i++){
         if(selec[i])
-            totalCom+=establecimientos[i+selec.length*prov.indexOf(nombreProvincia)]
+            totalCom+=establecimientos[nombreProvincia][sectores[i]];
     }
     var hab = habitantes[prov.indexOf(nombreProvincia)];
 
@@ -42,72 +42,89 @@ function calcularRatio(nombreProvincia){
 
 
 
-function mostrarGraficoBarras(provincia, comercios) {
+function mostrarGraficoBarras(provincia) {
 
-    document.getElementById("cloropletico").style.display = "none";
-    document.getElementById("leyenda").style.display = "none";
-    document.getElementById("checkboxesDiv").style.display = "none";
+    document.getElementById("contenedorMapa").style.display = "none";
+    document.getElementById("contenedorBarras").style.display = "flex";
+    
 
+    document.querySelector("h1").innerHTML = "Nº de comercios por sector comercial en " + provincia;
 
-    document.getElementById("graficoBarras").style.display = "block";
-    document.getElementById("tituloBarra").innerText = "Provincia: " + provincia;
-
+    // Preparar datos usando la estructura de establecimientos
     var dataProv = sectores.map((sector, i) => {
-        let total = 0;
-        comercios.forEach(d => {
-            if (
-                d.Provincia.toUpperCase() === provincia.toUpperCase() &&
-                d["Sector comercial"].toUpperCase() === sector.toUpperCase() &&
-                selec[i]
-            ) {
-                total += parseInt(d["Nº establecimientos"]);
-            }
-        });
+        // Solo incluir si el sector está seleccionado
+        let cantidad = 0;
+        if (selec[i] && establecimientos[provincia] && establecimientos[provincia][sector]) {
+            cantidad = establecimientos[provincia][sector];
+        }
         return {
             sector: sector,
-            cantidad: total
+            cantidad: cantidad
         };
-    });
-    console.log(dataProv);
+    }).filter(d => d.cantidad > 0) 
+      .sort((a, b) => b.cantidad - a.cantidad); 
+
+    console.log("Datos preparados:", dataProv);
+
+    // Configurar SVG
     var svg = d3.select("#barSvg");
-    svg.selectAll("*").remove(); 
+    svg.selectAll("*").remove();
 
-    var WIDTH = +svg.attr("width") - 100;
-    var HEIGHT = +svg.attr("height") - 50;
+    var margin = {top: 20, right: 20, bottom: 150, left: 70};
+    var WIDTH = +svg.attr("width") - margin.left - margin.right;
+    var HEIGHT = +svg.attr("height") - margin.top - margin.bottom;
 
+    // Crear grupo principal con márgenes
+    var g = svg.append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // Escalas
     var x = d3.scaleBand()
         .domain(dataProv.map(d => d.sector))
-        .range([50, WIDTH])
-        .padding(0.2);
+        .range([0, WIDTH])
+        .padding(0.3);
 
     var y = d3.scaleLinear()
         .domain([0, d3.max(dataProv, d => d.cantidad)])
-        .range([HEIGHT, 20]);
+        .nice()
+        .range([HEIGHT, 0]);
 
-
-    svg.append("g")
+    // Eje X
+    g.append("g")
         .attr("transform", `translate(0,${HEIGHT})`)
         .call(d3.axisBottom(x))
         .selectAll("text")
         .attr("transform", "rotate(-45)")
-        .style("text-anchor", "end");
+        .style("text-anchor", "end")
+        .style("font-size", "9px");
 
-    svg.append("g")
-        .attr("transform", `translate(50,0)`)
-        .call(d3.axisLeft(y));
-
-
-    svg.selectAll("rect")
+    // Barras
+    g.selectAll(".bar")
         .data(dataProv)
         .enter()
         .append("rect")
+        .attr("class", "bar")
         .attr("x", d => x(d.sector))
         .attr("y", d => y(d.cantidad))
         .attr("width", x.bandwidth())
         .attr("height", d => HEIGHT - y(d.cantidad))
-        .attr("fill", "#69b3a2");
-}
+        .attr("fill", "#ff0000ff")
+        .attr("stroke", "#333")
+        .attr("stroke-width", 1);
 
+    // Agregar valores encima de las barras (solo si la barra es visible)
+    g.selectAll(".label")
+        .data(dataProv)
+        .enter()
+        .append("text")
+        .attr("class", "label")
+        .attr("x", d => x(d.sector) + x.bandwidth() / 2)
+        .attr("y", d => y(d.cantidad) - 5)
+        .attr("text-anchor", "middle")
+        .style("font-size", "10px")
+        .style("font-weight", "bold")
+        .text(d => d.cantidad);
+}
 
 function dibujarMapa(){
     console.log("Dibujando Mapa");
@@ -303,9 +320,9 @@ function dibujarMapa(){
              var ratio = calcularRatio(provincia);
              if(maxRatio===0) return "black";
              console.log(maxRatio);
-             if (ratio > 0.75 * maxRatio) return "#a51b0b";      // Alto
-             if (ratio > 0.5 * maxRatio) return "#ff0000";       // Medio-alto
-             if (ratio > 0.25 * maxRatio) return "#ff7b5a";      // Medio
+             if (ratio > 0.85 * maxRatio) return "#a51b0b";      // Alto
+             if (ratio > 0.65 * maxRatio) return "#ff0000";       // Medio-alto
+             if (ratio > 0.45 * maxRatio) return "#ff7b5a";      // Medio
              return "#ffbfaa";
          }
 

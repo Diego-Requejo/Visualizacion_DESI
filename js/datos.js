@@ -34,7 +34,7 @@ async function recogerSectEst() {
         }
 
         // Asignar el valor: establecimientos[Provincia][Sector] = numero
-        establecimientos[d.Provincia][d.Sector] = +d.Establecimientos;;
+        establecimientos[d.Provincia][d.Sector] = +d.Establecimientos;
     });
 
 }
