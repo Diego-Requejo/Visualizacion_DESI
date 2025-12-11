@@ -9,7 +9,7 @@
 
 
   <title>Proyecto Visualización</title>
-    
+
 </head>
 <style>
   html, body {
@@ -27,56 +27,85 @@
     margin: 5px 0;
   }
 
-  #contenedorMapa {
+  .contenedor{
     width: 100%;
     height: 100%;
-    display: flex;
     padding: 10px;
     justify-content: center;
   }
 
-    #cloropletico {
-      height:80%;
-      aspect-ratio: 1/1;
-      margin: 0 10px 0 5px;
-    }
+  #contenedorMapa {
+    display: flex;
+  }
 
-    #mapSvg {
-      width:100%;
-      height:100%;
-    }
+  #contenedorBarras{
+    display: none;
+    position: relative;
+  }
 
-    #checkboxesDiv{
-      height: 80%;
+  #cloropletico {
+    height:80%;
+    aspect-ratio: 1/1;
+    margin: 0 10px 0 5px;
+  }
+
+
+
+  #checkboxesDiv{
+    height: 80%;
+    width: auto;
+    display: flex;
+    align-items: center;
+
+  }
+
+  #leyenda{
+    border:1px solid #aaa;
+    height: 180px;
+    width: 150px;
+    text-align: center;
+  }
+
+  legend{
+    font-size: 20pt;
+    font-weight: bold;
+  }
+
+  input[type="checkbox"]{
+    margin-bottom: 4px;
+    width: 12px;
+    height: 12px;
+    cursor: pointer;
+  }
+
+  label{
+    font-size: 11pt;
+    cursor: pointer;
+  }
+
+  #barrasDiv{
+    height:80%;
+    aspect-ratio: 4/3;
+    margin: 10px 0 0 10px;
+    border:1px solid #aaa;
+    justify-self: center;
+  }
+
+  #btnVolverMapa{
+      position: absolute; /* Sacar del flujo normal */
+      left: 7%; /* Pegado a la izquierda */
+      top: 0px; /* Separación desde arriba */
+      height: 50px;
       width: auto;
-      display: flex;
-      align-items: center;
-
-    }
-
-    #leyenda{
-      border:1px solid #aaa;
-      height: 180px;
-      width: 150px;
-      text-align: center;
-    }
-
-    legend{
-      font-size: 20pt;
+      padding: 5px 10px;
+      float: left;
+      font-size: 18pt;
       font-weight: bold;
-    }
-
-    input[type="checkbox"]{
-      margin-bottom: 4px;
-      width: 12px;
-      height: 12px;
+      color: white;
+      background-color: blue;
+      border-radius: 20px;
       cursor: pointer;
-    }
-
-    label{
-      font-size: 11pt;
-      cursor: pointer;
-    }
+  }
 </style>
 
 <body onload="inicializar()">
@@ -84,7 +113,7 @@
 <h1>Distribución de comercios por <br> sectores en las provincias de CyL </h1>
 
 <!-- Contenedor mapa y checkbox-->
-<div id="contenedorMapa">
+<div id="contenedorMapa" class="contenedor">
 
   <!-- Leyenda -->
   <div id="leyenda">
@@ -140,14 +169,17 @@
 </div>
 
 <!--GraficoBarras-->
-<div id="graficoBarras" style="display:none;">
-  <h2 id="tituloBarra">Datos provincia</h2>
-
-  <svg id="barSvg" width="650" height="450" style="border:1px solid #aaa">
-    <!-- Se vacía y llena con D3 al clicar provincia -->
-  </svg>
-
+<div id="contenedorBarras" class="contenedor">
   <button id="btnVolverMapa">Volver al mapa</button>
+
+  <div id="barrasDiv">
+    <svg id="barSvg" width="650" height="450">
+      <!-- Se vacía y llena con D3 al clicar provincia -->
+    </svg>
+  </div>
+
+
+
 </div>
 
 </body>
