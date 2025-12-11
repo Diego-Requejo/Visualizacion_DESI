@@ -7,7 +7,7 @@ clasificándolos por provincias y sector con la intención de ayudar a los comer
 Para ello se usará la biblioteca de javascript D3.
 
 ## 📊 Descripción de la visualización
-La visualización (a la que se puede acceder desde este [enlace](https://gitlab.inf.uva.es/dierequ/visualizacion_desi.git "Visulización"))
+La visualización (a la que se puede acceder desde este [enlace](https://visualizacion-desi-e47ad5.pages.gitlab.inf.uva.es/ "Visulización"))
 consta de dos representaciones:
 
 La primera de ellas se trata de un mapa cloroplético en el que se representa la proporción de comercios en
@@ -32,9 +32,9 @@ Visualizacion_DESI/
 │   ├── graficoBarras.png
 │   ├── mapa.png          
 ├── js/
-│   ├── contolEventos.js    # Inicialización y control de los eventos de cotrol y ratón
+│   ├── contolEventos.js    # Inicialización y manejo de los eventos de control
 │   ├── dibujar.js          # Dibujo y actualización de gráficos D3
-│   └── data_manager.js     # Procesamiento, normalizado y administración de datos (ya veremos)
+│   └── datos.js            # Extracción y almacenamiento de datos
 ├── data/
 │   └── habitantesProvincias.csv       # Datos de los habitantes de cada provincia
 │   └── numeroEstablecimientos.csv     # Datos de los comercios por sectores y provincias

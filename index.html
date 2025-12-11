@@ -3,7 +3,11 @@
 <head>
   <meta charset="utf-8">
   <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script type="text/javascript" src="proyectoVisualizacion.js"></script>
+  <script type="text/javascript" src="js/datos.js"></script>
+  <script type="text/javascript" src="js/controlEventos.js"></script>
+  <script type="text/javascript" src="js/dibujar.js"></script>
+
+
   <title>Proyecto Visualización</title>
     
 </head>
@@ -13,6 +17,7 @@
     height: 100%;
     margin: 0;
     overflow: hidden;
+    background-color: #AAF0D1;
   }
 
   h1{
@@ -51,7 +56,7 @@
 
     #leyenda{
       border:1px solid #aaa;
-      height: 190px;
+      height: 180px;
       width: 150px;
       text-align: center;
     }
@@ -83,12 +88,13 @@
 
   <!-- Leyenda -->
   <div id="leyenda">
-    <h3>Leyenda</h3>
-    <svg id="legendaSvg" width="100%" height="120">
-      <rect x="10"  y="98" width="20" height="20" fill="#ffbfaa"></rect> <text x="40" y="110">Bajo</text>
-      <rect x="10"  y="70" width="20" height="20" fill="#ff7b5a"></rect> <text x="40" y="85">Medio</text>
-      <rect x="10"  y="40" width="20" height="20" fill="#ff0000"></rect> <text x="40" y="55">Medioalto</text>
-      <rect x="10"  y="10" width="20" height="20" fill="#a51b0b"></rect> <text x="40" y="25">Alto</text>
+    <h3 style="margin: 3px">Comercios /<br>
+    10.000 hab</h3>
+    <svg id="leyendaSvg" width="100%" height="120">
+      <rect x="10"  y="98" width="20" height="20" fill="#ffbfaa"></rect> <text id = "interBajo" x="40" y="110">Bajo</text>
+      <rect x="10"  y="70" width="20" height="20" fill="#ff7b5a"></rect> <text id = "interMedio" x="40" y="85">Medio</text>
+      <rect x="10"  y="40" width="20" height="20" fill="#ff0000"></rect> <text id = "interMedioalto" x="40" y="55">Medioalto</text>
+      <rect x="10"  y="10" width="20" height="20" fill="#a51b0b"></rect> <text id = "interAlto" x="40" y="25">Alto</text>
     </svg>
   </div>
 
