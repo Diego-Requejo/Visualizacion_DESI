@@ -10,7 +10,7 @@ async function recogerData() {
 
 async function recogerProvHab() {
 
-    const data = await d3.csv("../data/habitantesProvincias.csv");
+    const data = await d3.csv("data/habitantesProvincias.csv");
 
     data.forEach(function (d) {
         prov.push(d.PROVINCIA);
@@ -20,7 +20,7 @@ async function recogerProvHab() {
 }
 
 async function recogerSectEst() {
-    const data = await d3.csv("../data/numeroEstablecimientos.csv");
+    const data = await d3.csv("data/numeroEstablecimientos.csv");
 
 
     data.forEach(function (d) {
