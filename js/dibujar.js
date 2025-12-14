@@ -1,10 +1,10 @@
 
 
-
+//Funcion que cambia la leyenda dependiendo del ratio maximo en cada momento
 function modificarLeyenda(maxRatio){
-    var bajo = (maxRatio*0.90);
+    var bajo = (maxRatio*0.40);
     var medio =(maxRatio*0.65);
-    var medioAlto = (maxRatio*0.40);
+    var medioAlto = (maxRatio*0.90);
 
     if(maxRatio===0)
         d3.selectAll("text").text("-")
@@ -27,6 +27,7 @@ function modificarLeyenda(maxRatio){
 
 }
 
+//Funcion que calcula el ratio de comercios por habitantes (eschab)
 var escHab = 10000;
 function calcularRatio(nombreProvincia){
     var totalCom = 0;
@@ -41,7 +42,7 @@ function calcularRatio(nombreProvincia){
 
 
 
-
+//Funcion que muestra el grafico de barras una vez la provincia es seleccionada.
 function mostrarGraficoBarras(provincia) {
 
     document.getElementById("contenedorMapa").style.display = "none";
@@ -129,6 +130,7 @@ function mostrarGraficoBarras(provincia) {
         .transition().delay(300).duration(2500).attr("x", d => x(d.cantidad) + 10);
 }
 
+//Funcion que dibuja el mapa cloropletico
 function dibujarMapa(){
     console.log("Dibujando Mapa");
     d3.select("#cloropletico").selectAll("svg").remove();
@@ -319,7 +321,7 @@ function dibujarMapa(){
                  });
 
          }
-
+         //Funcion que cambia el color de cada provincia dependiendo de a que parte del ratio se corresponda
          function colorProvincia(data, i){
              var provincia = provincias[i];
              //console.log(provincia);
@@ -366,7 +368,7 @@ function dibujarMapa(){
              }
          }
 
-
+         //Funcion que muestra el ratio exacto de comercios por habitante en cada provincia
          function handleMouseOut(event, i) {
              d3.select("#t" + event.target.id).remove();  // Ahora sí existe
              d3.select("#r" + event.target.id).remove();

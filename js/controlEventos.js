@@ -1,7 +1,8 @@
 var selec=[]
 
 
-
+//Funcion que inicializa el mapa cloropletico
+//Cambia al mapa cloropletico cuando se selecciona el boton de volver al mapa desde el grafico de barras
 async function inicializar() {
 
 
@@ -24,7 +25,7 @@ async function inicializar() {
     }
 }
 
-
+//Funcion que implementa el checkbox de seleccionar todo
 function selecTodo(){
     document.getElementsByName("sector").forEach(sector => {
         sector.checked = true;
@@ -35,7 +36,7 @@ function selecTodo(){
 
     dibujarMapa();
 }
-
+//Funcion que implementa el checkbox de deseleccionar todo
 function deselecTodo(){
     document.getElementsByName("sector").forEach(sector => {
         sector.checked = false;
@@ -46,7 +47,7 @@ function deselecTodo(){
 
     dibujarMapa();
 }
-
+//Funcion que implementa el cambio de filtros cuando se selecciona o deselecciona una checkbox de comercio
 function cambioFiltros(i, checked){
     selec[i]=checked;
     if(checked)
