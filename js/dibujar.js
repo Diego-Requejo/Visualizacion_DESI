@@ -85,7 +85,7 @@ function dibujarGraficoBarras(provincia) {
     var svg = d3.select("#barSvg");
     svg.selectAll("*").remove();
 
-    var margin = {top: 10, right: 20, bottom: 10, left: 170};
+    var margin = {top: 10, right: 30, bottom: 10, left: 235};
 
     var WIDTH = document.getElementById("barrasDiv").offsetWidth -  margin.left - margin.right;
     var HEIGHT = document.getElementById("barrasDiv").offsetHeight - margin.top - margin.bottom;
@@ -97,7 +97,6 @@ function dibujarGraficoBarras(provincia) {
     // Escalas
     var x = d3.scaleLinear()
         .domain([0, d3.max(dataProv, d => d.cantidad)])
-        .nice()
         .range([0, WIDTH]);
 
     var y = d3.scaleBand()
@@ -112,7 +111,7 @@ function dibujarGraficoBarras(provincia) {
         .call(d3.axisLeft(y))
         .selectAll("text")
         .style("text-anchor", "end")
-        .style("font-size", "9px");
+        .style("font-size", "11px");
 
     // Barras
     g.selectAll(".bar")
