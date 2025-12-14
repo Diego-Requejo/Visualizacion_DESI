@@ -16,12 +16,14 @@ elegir los datos de que sectores comerciales mostrar. Al pasar el ratón por enc
 el dato exacto de la provincia correspondiente y al pulsar en la provincia se muestra el segundo tipo de representación
 con los datos de esa provincia.
 
-![Imagen primera representación](img/mapa.png "Mapa cloroplético").
+![Imagen primera representación](img/mapa.png "Mapa cloroplético") 
 
+<br>
+   
 La segunda representación es un gráfico de barras horizontales con los datos del número de establecimientos
 de cada sector comercial de la provincia seleccionada. Cuenta también con un botón para volver al mapa cloroplético.
 
-![Imagen segunda representación](img/graficoBarras.png "Gráfico de barras").
+![Imagen segunda representación](img/graficoBarras.png "Gráfico de barras")
 
 ## 📂 Estructura
 ```

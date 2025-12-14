@@ -1,14 +1,22 @@
+//VARIABLES GLOBALES para almacenar los datos
 var prov =[];
 var habitantes = []
 var sectores =[];
 var establecimientos = {};
-//Funcion que recopila todos los datos
+
+
+/**
+ * Funcion que recopila todos los datos y los guarda en variables globales
+ */
 async function recogerData() {
     await recogerProvHab();
     await recogerSectEst();
-    console.log(establecimientos);
 }
-//Funcion que recoge los datos del csv de las provincias
+
+/**
+ * Funcion que recoge los datos del csv de las provincias
+ * y los guarda en los vetores prov y habitantes
+ */
 async function recogerProvHab() {
 
     const data = await d3.csv("data/habitantesProvincias.csv");
@@ -19,7 +27,11 @@ async function recogerProvHab() {
     });
 
 }
-//Funcion que recoge los datos del csv de los establecimientos
+
+/**
+ * Funcion que recoge los datos del csv de los sectores
+ * y los guarda en el vector sectores y el diccionario establecimientos
+ */
 async function recogerSectEst() {
     const data = await d3.csv("data/numeroEstablecimientos.csv");
 

@@ -43,8 +43,8 @@
     position: relative;
   }
 
-  #cloropletico {
-    height:80%;
+  #coropletico {
+    height:90%;
     aspect-ratio: 1/1;
     margin: 0 10px 0 5px;
   }
@@ -59,11 +59,17 @@
 
   }
 
+  fieldset{
+    border: 2px solid #aaa;
+    border-radius: 10px;
+  }
+
   #leyenda{
     border:1px solid #aaa;
     height: 180px;
     width: 150px;
     text-align: center;
+    border-radius: 10px;
   }
 
   legend{
@@ -132,7 +138,7 @@
   </div>
 
   <!-- Mapa -->
-  <div id="cloropletico">
+  <div id="coropletico">
 
   </div>
 
@@ -174,7 +180,7 @@
 
 <!--GraficoBarras-->
 <div id="contenedorBarras" class="contenedor">
-  <button id="btnVolverMapa">Volver al mapa</button>
+  <button id="btnVolverMapa" onclick="botonVolver()">Volver al mapa</button>
 
   <div id="barrasDiv">
     <svg id="barSvg">
