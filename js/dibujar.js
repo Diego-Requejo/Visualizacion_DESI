@@ -135,13 +135,13 @@ function dibujarGraficoBarras(provincia) {
         .enter()
         .append("text")
         .attr("class", "label")
-        .attr("x", 10)
-        .attr("y", d => y(d.sector) + y.bandwidth() / 2 + 3)
+        .attr("x", 15)
+        .attr("y", d => y(d.sector) + y.bandwidth() / 2 + 5)
         .attr("text-anchor", "middle")
-        .style("font-size", "10px")
+        .style("font-size", "20spx")
         .style("font-weight", "bold")
         .text(d => d.cantidad)
-        .transition().delay(300).duration(2500).attr("x", d => x(d.cantidad) + 10);
+        .transition().delay(300).duration(2500).attr("x", d => x(d.cantidad) + 15);
 }
 
 /**
