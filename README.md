@@ -51,7 +51,8 @@ Visualizacion_DESI/
 * GitLab (Este [repositorio](https://gitlab.inf.uva.es/dierequ/visualizacion_desi.git "Repositorio del proyecto"))
 
 ## ⛲📈 Fuentes de datos
-* Fuente 1: Dataset con el que se ha trabajado para extraer los datos: 
+* Fuente 1: [Dataset](https://datosabiertos.jcyl.es/web/jcyl/set/es/economia/establecimientos-comerciales/1285142020827
+"Dataset") con el que se ha trabajado para extraer los datos: 
 Dirección General de Comercio y Consumo - Consejería de Industria, Comercio y Empleo
 * Fuente 2: Archivo GeoJson para dibujar el mapa de CyL: proporcionado por los
 profesores de la asignatura.
