@@ -2,9 +2,9 @@
 
 
 function modificarLeyenda(maxRatio){
-    var bajo = (maxRatio*0.45);
+    var bajo = (maxRatio*0.90);
     var medio =(maxRatio*0.65);
-    var medioAlto = (maxRatio*0.85);
+    var medioAlto = (maxRatio*0.40);
 
     if(maxRatio===0)
         d3.selectAll("text").text("-")
@@ -27,7 +27,7 @@ function modificarLeyenda(maxRatio){
 
 }
 
-
+var escHab = 10000;
 function calcularRatio(nombreProvincia){
     var totalCom = 0;
     for(var i=0;i<selec.length;i++){
@@ -36,7 +36,7 @@ function calcularRatio(nombreProvincia){
     }
     var hab = habitantes[prov.indexOf(nombreProvincia)];
 
-    return (totalCom / hab*10000);
+    return (totalCom / hab*escHab);
 }
 
 
@@ -48,13 +48,13 @@ function mostrarGraficoBarras(provincia) {
     document.getElementById("contenedorBarras").style.display = "flex";
     
 
-    document.querySelector("h1").innerHTML = "Nº de comercios por sector comercial en " + provincia;
+    document.querySelector("h1").innerHTML = "Nº de comercios por sector<br>comercial en " + provincia;
 
     // Preparar datos usando la estructura de establecimientos
     var dataProv = sectores.map((sector, i) => {
         // Solo incluir si el sector está seleccionado
         let cantidad = 0;
-        if (selec[i] && establecimientos[provincia] && establecimientos[provincia][sector]) {
+        if (establecimientos[provincia] && establecimientos[provincia][sector]) {
             cantidad = establecimientos[provincia][sector];
         }
         return {
@@ -62,7 +62,7 @@ function mostrarGraficoBarras(provincia) {
             cantidad: cantidad
         };
     }).filter(d => d.cantidad > 0) 
-      .sort((a, b) => b.cantidad - a.cantidad); 
+      .sort((a, b) => b.cantidad - a.cantidad);
 
     console.log("Datos preparados:", dataProv);
 
@@ -70,31 +70,32 @@ function mostrarGraficoBarras(provincia) {
     var svg = d3.select("#barSvg");
     svg.selectAll("*").remove();
 
-    var margin = {top: 20, right: 20, bottom: 150, left: 70};
-    var WIDTH = +svg.attr("width") - margin.left - margin.right;
-    var HEIGHT = +svg.attr("height") - margin.top - margin.bottom;
+    var margin = {top: 10, right: 20, bottom: 10, left: 170};
+
+    var WIDTH = document.getElementById("barrasDiv").offsetWidth -  margin.left - margin.right;
+    var HEIGHT = document.getElementById("barrasDiv").offsetHeight - margin.top - margin.bottom;
 
     // Crear grupo principal con márgenes
     var g = svg.append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // Escalas
-    var x = d3.scaleBand()
-        .domain(dataProv.map(d => d.sector))
-        .range([0, WIDTH])
-        .padding(0.3);
-
-    var y = d3.scaleLinear()
+    var x = d3.scaleLinear()
         .domain([0, d3.max(dataProv, d => d.cantidad)])
         .nice()
-        .range([HEIGHT, 0]);
+        .range([0, WIDTH]);
 
-    // Eje X
+    var y = d3.scaleBand()
+        .domain(dataProv.map(d => d.sector))
+        .range([0, HEIGHT])
+        .padding(0.3);
+
+
+    // Eje Y
     g.append("g")
-        .attr("transform", `translate(0,${HEIGHT})`)
-        .call(d3.axisBottom(x))
+        .attr("id", "graph")
+        .call(d3.axisLeft(y))
         .selectAll("text")
-        .attr("transform", "rotate(-45)")
         .style("text-anchor", "end")
         .style("font-size", "9px");
 
@@ -104,13 +105,14 @@ function mostrarGraficoBarras(provincia) {
         .enter()
         .append("rect")
         .attr("class", "bar")
-        .attr("x", d => x(d.sector))
-        .attr("y", d => y(d.cantidad))
-        .attr("width", x.bandwidth())
-        .attr("height", d => HEIGHT - y(d.cantidad))
+        .attr("x", 0)
+        .attr("y", d => y(d.sector))
+        .attr("width", 0)
+        .attr("height", y.bandwidth())
         .attr("fill", "#ff0000ff")
         .attr("stroke", "#333")
-        .attr("stroke-width", 1);
+        .attr("stroke-width", 1)
+        .transition().delay(300).duration(2500).attr("width", d => x(d.cantidad));
 
     // Agregar valores encima de las barras (solo si la barra es visible)
     g.selectAll(".label")
@@ -118,12 +120,13 @@ function mostrarGraficoBarras(provincia) {
         .enter()
         .append("text")
         .attr("class", "label")
-        .attr("x", d => x(d.sector) + x.bandwidth() / 2)
-        .attr("y", d => y(d.cantidad) - 5)
+        .attr("x", 10)
+        .attr("y", d => y(d.sector) + y.bandwidth() / 2 + 3)
         .attr("text-anchor", "middle")
         .style("font-size", "10px")
         .style("font-weight", "bold")
-        .text(d => d.cantidad);
+        .text(d => d.cantidad)
+        .transition().delay(300).duration(2500).attr("x", d => x(d.cantidad) + 10);
 }
 
 function dibujarMapa(){
@@ -282,6 +285,7 @@ function dibujarMapa(){
              .attr("d", geoPath)
              .on("click",resaltaProvincia)
              .attr("fill", colorProvincia)
+             .attr("stroke", "#333333")
              .on("mouseover", handleMouseOver)
              .on("mouseout", handleMouseOut);
 
@@ -295,7 +299,7 @@ function dibujarMapa(){
              });
 
              // Animación
-             var escalaProvincia = escala * 5;
+             var escalaProvincia = escala * 10;
 
              var centroProvincia = geoPath.centroid(planoProvincia);
              var projectionProv = d3.geoMercator().scale(escalaProvincia);
@@ -306,12 +310,14 @@ function dibujarMapa(){
              projectionProv = projectionProv.translate([transXProv, transYProv]);
              geoPathProv = d3.geoPath(projectionProv);
 
-             d3.select(this).transition().duration(2000)
-                 .attr("d", geoPathProv(planoProvincia))
+             d3.selectAll("path").transition().duration(2000)
+                 .attr("fill", "#AAF0D1")
+                 .attr("d", geoPathProv)
                  .on("end", function() {
                      // Al terminar la animación, mostramos gráfico de barras
                      mostrarGraficoBarras(evento.target.id);
                  });
+
          }
 
          function colorProvincia(data, i){
@@ -320,9 +326,9 @@ function dibujarMapa(){
              var ratio = calcularRatio(provincia);
              if(maxRatio===0) return "black";
              console.log(maxRatio);
-             if (ratio > 0.85 * maxRatio) return "#a51b0b";      // Alto
+             if (ratio > 0.90 * maxRatio) return "#a51b0b";      // Alto
              if (ratio > 0.65 * maxRatio) return "#ff0000";       // Medio-alto
-             if (ratio > 0.45 * maxRatio) return "#ff7b5a";      // Medio
+             if (ratio > 0.40 * maxRatio) return "#ff7b5a";      // Medio
              return "#ffbfaa";
          }
 
@@ -332,11 +338,12 @@ function dibujarMapa(){
              if(maxRatio!==0) {
                  var provincia = d.properties.provincia;
                  var ratio = calcularRatio(provincia).toFixed(1);
-
+                 var posX, posY;
+                 [posX, posY] = d3.pointer(event);
                  svg.append("rect")
                      .attr("id", "r" + provincia)
-                     .attr("x", event.offsetX + 10)
-                     .attr("y", event.offsetY - 20)
+                     .attr("x", posX + 10)
+                     .attr("y", posY - 20)
                      .attr("width", 190)
                      .attr("height", 50)
                      .style("fill", "#FFFFDD")
@@ -344,18 +351,18 @@ function dibujarMapa(){
 
                  var tooltip = svg.append("text")
                      .attr("id", "t" + provincia)
-                     .attr("x", event.offsetX + 20)
-                     .attr("y", event.offsetY + 5);
+                     .attr("x", posX + 20)
+                     .attr("y", posY + 5);
 
                  tooltip.append("tspan")
-                     .attr("x", event.offsetX + 20)
+                     .attr("x", posX + 20)
                      .attr("dy", 0)
                      .text(provincia + ": " + ratio + " comercios");
 
                  tooltip.append("tspan")
-                     .attr("x", event.offsetX + 80)
+                     .attr("x", posX+ 90)
                      .attr("dy", "1.2em")  // Espaciado entre líneas
-                     .text("              / 10000 hab");
+                     .text("/" + escHab +" hab");
              }
          }
 

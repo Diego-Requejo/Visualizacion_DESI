@@ -72,7 +72,7 @@
   }
 
   input[type="checkbox"]{
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     width: 12px;
     height: 12px;
     cursor: pointer;
@@ -85,15 +85,19 @@
 
   #barrasDiv{
     height:80%;
-    aspect-ratio: 4/3;
+    aspect-ratio: 3/2;
     margin: 10px 0 0 10px;
-    border:1px solid #aaa;
     justify-self: center;
+  }
+
+  #barSvg{
+    height: 100%;
+    width: 100%;
   }
 
   #btnVolverMapa{
       position: absolute; /* Sacar del flujo normal */
-      left: 7%; /* Pegado a la izquierda */
+      left: 5%; /* Pegado a la izquierda */
       top: 0px; /* Separación desde arriba */
       height: 50px;
       width: auto;
@@ -173,7 +177,7 @@
   <button id="btnVolverMapa">Volver al mapa</button>
 
   <div id="barrasDiv">
-    <svg id="barSvg" width="650" height="450">
+    <svg id="barSvg">
       <!-- Se vacía y llena con D3 al clicar provincia -->
     </svg>
   </div>
