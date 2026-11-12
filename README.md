@@ -7,7 +7,7 @@ clasificándolos por provincias y sector con la intención de ayudar a los comer
 Para ello se usará la biblioteca de javascript D3.
 
 ## 📊 Descripción de la visualización
-La visualización (a la que se puede acceder desde este [enlace](https://visualizacion-desi-e47ad5.pages.gitlab.inf.uva.es/ "Visulización"))
+La visualización (a la que se puede acceder desde este [enlace](https://diego-requejo.github.io/Visualizacion_DESI/))
 consta de dos representaciones:
 
 La primera de ellas se trata de un mapa cloroplético en el que se representa la proporción de comercios en
